@@ -1,6 +1,20 @@
 @extends('layouts.public')
 
 @section('content')
+<br>
+<a href="{{ route('portal') }}"
+    style="background-color: #CD1719; color: white; font-weight: 600; padding: 0.5rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: background-color 0.3s; text-decoration: none;"
+    onmouseover="this.style.backgroundColor='#A01214';"
+    onmouseout="this.style.backgroundColor='#CD1719';"
+    class="inline-flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 19l-7-7 7-7" />
+    </svg>
+    Regresar al Panel Principal
+</a>
+<br>
 <div class="max-w-3xl mx-auto bg-white p-8 rounded shadow">
 
     <h2 class="text-2xl font-bold text-red-600 mb-6 text-center">
