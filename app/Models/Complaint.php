@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Complaint extends Model
 {
     protected $fillable = [
+        'folio',
         'es_anonima',
         'nombre',
         'apellido_paterno',
@@ -14,24 +15,26 @@ class Complaint extends Model
         'telefono',
         'correo',
         'puesto',
-        'temas',
-        'otro_tema',
+        'complaint_topic_id',
         'situacion',
         'impacto',
         'mejora',
         'comentarios',
         'unidad',
-        'otro_tema',
         'status',
     ];
 
     protected $casts = [
-        'temas' => 'array',
         'es_anonima' => 'boolean',
     ];
 
-    public function topics()
+    public function topic()
     {
-        return $this->belongsToMany(ComplaintTopic::class);
+        return $this->belongsTo(ComplaintTopic::class, 'complaint_topic_id');
+    }
+
+    public function statusHistory()
+    {
+        return $this->hasMany(ComplaintStatusHistory::class);
     }
 }

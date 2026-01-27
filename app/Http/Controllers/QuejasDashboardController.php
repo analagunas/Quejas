@@ -4,42 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Complaint;
 use Illuminate\Http\Request;
+use App\Models\ComplaintStatusHistory;
+use Illuminate\Support\Facades\Auth;
 
 class QuejasDashboardController extends Controller
 {
     public function index()
     {
-        $complaints = Complaint::latest()->get();
+        $complaints = Complaint::with('topic')->latest()->get();
 
         $total = $complaints->count();
 
         /* ==========================
-           Quejas por TEMA
-        ========================== */
-        $byTheme = [];
-
-        foreach ($complaints as $complaint) {
-            $themes = json_decode($complaint->temas, true);
-
-            if (!is_array($themes)) {
-                continue;
-            }
-
-            foreach ($themes as $theme) {
-                $byTheme[$theme] = ($byTheme[$theme] ?? 0) + 1;
-            }
-        }
+       Quejas por TEMA (usando relación)
+    ========================== */
+        $byTheme = $complaints
+            ->groupBy(fn($c) => $c->topic?->name ?? 'Sin tema')
+            ->map(fn($group) => $group->count());
 
         /* ==========================
-           Quejas por STATUS
-        ========================== */
+       Quejas por STATUS
+    ========================== */
         $byStatus = $complaints
             ->groupBy('status')
             ->map(fn($group) => $group->count());
 
         /* ==========================
-           Quejas por UNIDAD
-        ========================== */
+       Quejas por UNIDAD
+    ========================== */
         $byUnit = $complaints
             ->groupBy('unidad')
             ->map(fn($group) => $group->count());
@@ -53,15 +45,31 @@ class QuejasDashboardController extends Controller
         ));
     }
 
+
     public function updateStatus(Request $request, Complaint $complaint)
     {
+        // Si ya está resuelta, no permitir cambios
+        if ($complaint->status === 'Resuelta') {
+            return back()->withErrors('Esta queja ya fue marcada como resuelta y no puede modificarse.');
+        }
+
         $request->validate([
-            'status' => 'required|in:pending,in_progress,resolved',
+            'status' => 'required|string',
+            'comment' => 'required|string|min:5',
         ]);
 
-        // ✅ AQUÍ ESTABA EL ERROR
+        $oldStatus = $complaint->status;
+
         $complaint->update([
             'status' => $request->status,
+        ]);
+
+        ComplaintStatusHistory::create([
+            'complaint_id' => $complaint->id,
+            'user_id' => auth()->id(),
+            'old_status' => $oldStatus,
+            'new_status' => $request->status,
+            'comment' => $request->comment,
         ]);
 
         return back()->with('success', 'Estatus actualizado correctamente');

@@ -1,51 +1,29 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Http\Controllers\QuejasDashboardController;
 use App\Http\Controllers\PublicQuejaController;
+use App\Http\Controllers\QuejasDashboardController;
+use App\Http\Controllers\PublicTrackingController;
 
-/*
-|--------------------------------------------------------------------------
-| SSO – LOGIN DESDE AUTH
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/sso', function (Request $request) {
-
-    if (! $request->email) {
-        abort(401, 'Email requerido');
-    }
-
-    $user = User::where('email', $request->email)->firstOrFail();
-
-    auth()->login($user);
-
-    return redirect()->route('quejas.dashboard');
-})->name('quejas.sso.login');
-
-
-/*
-|--------------------------------------------------------------------------
-| RUTA RAÍZ
-|--------------------------------------------------------------------------
-*/
 Route::get('/', function () {
-
-    if (auth()->check()) {
-        return redirect()->route('quejas.dashboard');
-    }
-
-    return redirect()->route('quejas.create');
-});
+    return view('quejas.portal');
+})->name('portal');
 
 
-/*
-|--------------------------------------------------------------------------
-| FORMULARIO PÚBLICO DE QUEJAS
-|--------------------------------------------------------------------------
-*/
+Route::get('/seguimiento', function () {
+    return view('quejas.tracking.form');
+})->name('quejas.tracking.form');
+
+Route::post('/seguimiento', [PublicTrackingController::class, 'search'])
+    ->name('quejas.tracking.search');
+
+
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/nueva-queja', [PublicQuejaController::class, 'create'])
     ->name('quejas.create');
 
@@ -56,17 +34,16 @@ Route::get('/gracias', function () {
     return view('quejas.gracias');
 })->name('quejas.gracias');
 
-
-/*
-|--------------------------------------------------------------------------
-| DASHBOARD (USUARIOS LOGUEADOS)
-|--------------------------------------------------------------------------
-*/
 Route::middleware('auth')->group(function () {
-
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard', [QuejasDashboardController::class, 'index'])
-        ->name('quejas.dashboard');
+        ->name('dashboard');
 
     Route::patch('/{complaint}/status', [QuejasDashboardController::class, 'updateStatus'])
         ->name('quejas.update-status');
 });
+
+
+require __DIR__ . '/auth.php';

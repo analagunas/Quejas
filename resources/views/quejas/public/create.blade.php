@@ -1,16 +1,35 @@
 @extends('layouts.public')
 
 @section('content')
+<br>
+<a href="{{ route('portal') }}"
+    style="background-color: #CD1719; color: white; font-weight: 600; padding: 0.5rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: background-color 0.3s; text-decoration: none;"
+    onmouseover="this.style.backgroundColor='#A01214';"
+    onmouseout="this.style.backgroundColor='#CD1719';"
+    class="inline-flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 19l-7-7 7-7" />
+    </svg>
+    Regresar al Panel Principal
+</a>
+<br>
 <div class="py-12">
     <div class="max-w-3xl mx-auto bg-white p-8 rounded shadow">
 
-        <h2 class="text-2xl font-bold text-center mb-2">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-20 w-auto mx-auto mb-4">
+
+        <h2 class="text-3xl font-bold text-red-600 mb-2 text-center">
             Buzón de Quejas y Sugerencias
         </h2>
 
-        <p class="text-center text-gray-600 mb-6">
-            La información proporcionada es confidencial.
+        <p class="text-justify max-w-prose mx-auto">
+            Agradecemos su visita a este medio, recuerde que esta hecho para usted y fue diseñado con el propósito de prevenir y/o corregir cualquier comportamiento que pueda generar algún riesgo psicosocial, violencia laboral, así como promover un entorno organizacional favorable.
+            La información obtenida es TOTALMENTE CONFIDENCIAL Y PRIVADA, y será utilizada únicamente con el fin de dar solución a la queja o denuncia presentada. Bajo ninguna circunstancia se generarán represalias a aquellos trabajadores que de buena fe presenten una queja o denuncia relacionadas a prácticas opuestas al entorno organizacional favorable o actos de violencia laboral.
+            Así mismo, agradecemos que nos proporcione la siguiente información para actuar de manera inmediata.
         </p>
+        <br>
 
         <form method="POST" action="{{ route('quejas.store') }}" class="space-y-6">
             @csrf
@@ -37,8 +56,24 @@
                 <input type="text" name="apellido_materno" placeholder="Apellido materno" class="input">
                 <input type="text" name="telefono" placeholder="Teléfono" class="input">
                 <input type="email" name="correo" placeholder="Correo electrónico" class="input">
-                <input type="text" name="puesto" placeholder="Puesto de trabajo" class="input">
             </div>
+            <label class="block font-medium text-gray-700 mb-1">
+                Puesto de trabajo <span class="text-red-500">*</span>
+            </label>
+            <p class="text-sm text-gray-500 mb-2">
+                Seleccione su puesto para canalizar adecuadamente la queja.
+            </p>
+            <select name="puesto" class="input w-full">
+
+                <option value="">Seleccione su puesto</option>
+
+                @foreach($positions as $position)
+                <option value="{{ $position->name }}">
+                    {{ $position->name }}
+                </option>
+                @endforeach
+            </select>
+
 
             <div class="mt-6">
                 <label class="block font-medium text-gray-700 mb-1">
@@ -69,22 +104,20 @@
 
             {{-- Tema --}}
             <div>
-                <label class="font-semibold">Tema de la queja</label>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    @foreach([
-                    'Ambiente de trabajo',
-                    'Jornadas de trabajo extensas',
-                    'Violencia laboral',
-                    'Cargas de trabajo',
-                    'Liderazgo',
-                    'Otros'
-                    ] as $tema)
-                    <label>
-                        <input type="checkbox" name="temas[]" value="{{ $tema }}">
-                        {{ $tema }}
-                    </label>
-                    @endforeach
+                <div>
+                    <label class="font-semibold block mb-2">Tema de la queja</label>
+
+                    <select name="complaint_topic_id" class="input w-full" required>
+                        <option value="">Seleccione un tema</option>
+
+                        @foreach($topics as $topic)
+                        <option value="{{ $topic->id }}">
+                            {{ $topic->name }}
+                        </option>
+                        @endforeach
+                    </select>
                 </div>
+
             </div>
 
             {{-- ===================== --}}
@@ -104,7 +137,7 @@
                         name="situacion"
                         required
                         rows="4"
-                        class="input"
+                        class="input w-full max-w-none"
                         placeholder="Ejemplo: Desde hace algunas semanas se presentan conductas inapropiadas en el área..."></textarea>
                 </div>
 
@@ -119,7 +152,7 @@
                         name="impacto"
                         required
                         rows="3"
-                        class="input"
+                        class="input w-full max-w-none"
                         placeholder="Ejemplo: Dificulta la concentración, genera estrés o afecta la productividad..."></textarea>
                 </div>
 
@@ -134,7 +167,7 @@
                         name="mejora"
                         required
                         rows="3"
-                        class="input"
+                        class="input w-full max-w-none"
                         placeholder="Ejemplo: Capacitación, mediación, ajustes en procesos..."></textarea>
                 </div>
 
@@ -148,7 +181,7 @@
                     <textarea
                         name="comentarios"
                         rows="2"
-                        class="input"
+                        class="input w-full max-w-none"
                         placeholder="Comentarios opcionales"></textarea>
                 </div>
 

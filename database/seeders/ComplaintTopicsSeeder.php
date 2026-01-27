@@ -2,28 +2,20 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
-use App\Models\ComplaintTopic;
+use Illuminate\Support\Facades\DB;
 
 class ComplaintTopicsSeeder extends Seeder
 {
     public function run(): void
     {
-        $topics = [
-            'Ambiente de trabajo',
-            'Jornadas de trabajo extensas',
-            'Violencia laboral (Acoso psicológico, hostigamiento, malos tratos, etc.)',
-            'Cargas de trabajo',
-            'Liderazgo',
-            'Otros',
-        ];
-
-        foreach ($topics as $topic) {
-            ComplaintTopic::firstOrCreate([
-                'name' => $topic
-            ]);
-        }
+        DB::table('complaint_topics')->updateOrInsert([
+            ['name' => 'Ambiente de trabajo'],
+            ['name' => 'Jornadas de trabajo extensas'],
+            ['name' => 'Violencia laboral'],
+            ['name' => 'Cargas de trabajo'],
+            ['name' => 'Liderazgo'],
+            ['name' => 'Otros'],
+        ]);
     }
 }

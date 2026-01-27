@@ -35,6 +35,16 @@
                 contigo para dar seguimiento.
             </p>
 
+            <p class="mt-4">
+                Tu folio de seguimiento es:
+            </p>
+
+            <p class="text-3xl font-mono font-bold text-red-600 mt-2">
+                {{ session('folio') }}
+            </p>
+
+            <br>
+
             {{-- Botón --}}
             <a href="{{ url('/') }}"
                 class="inline-block bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition">

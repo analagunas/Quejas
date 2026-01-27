@@ -18,13 +18,20 @@
 <body class="font-sans antialiased bg-gray-100">
 
     <!-- Header público -->
-    <header class="bg-white shadow">
+    <header class="bg-red-600">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-lg font-semibold text-gray-800">
-                {{ config('app.name') }}
-            </h1>
+
+            <!-- Logo + Nombre -->
+            <div class="flex items-center gap-3 ">
+
+                <h1 class="text-3xl font-bold text-white">
+                    {{ config('app.name') }}
+                </h1>
+            </div>
+
         </div>
     </header>
+
 
     <main>
         @yield('content')
