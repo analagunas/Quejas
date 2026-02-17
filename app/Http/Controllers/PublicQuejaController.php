@@ -54,4 +54,10 @@ class PublicQuejaController extends Controller
         return redirect()->route('quejas.gracias')
             ->with('folio', $data['folio']);
     }
+
+    public function show(Complaint $complaint)
+    {
+        $complaint->load('statusHistory.user');
+        return view('quejas.show', compact('complaint'));
+    }
 }

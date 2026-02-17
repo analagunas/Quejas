@@ -24,4 +24,20 @@ class PublicTrackingController extends Controller
 
         return view('quejas.tracking.form', compact('complaint'));
     }
+
+    public function reply(Request $request, Complaint $complaint)
+    {
+        $request->validate([
+            'reply' => 'required|string|max:1000'
+        ]);
+
+        $complaint->statusHistory()->create([
+            'user_id' => 1, // usuario externo
+            'old_status' => $complaint->status,
+            'new_status' => $complaint->status,
+            'comment' => $request->reply
+        ]);
+
+        return back()->with('success', 'Tu respuesta fue enviada');
+    }
 }

@@ -18,6 +18,12 @@ Route::get('/seguimiento', function () {
 Route::post('/seguimiento', [PublicTrackingController::class, 'search'])
     ->name('quejas.tracking.search');
 
+Route::post(
+    '/tracking/{complaint}/reply',
+    [PublicTrackingController::class, 'reply']
+)->name('quejas.tracking.reply');
+
+
 
 
 Route::get('/dashboard', function () {
@@ -43,6 +49,8 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/{complaint}/status', [QuejasDashboardController::class, 'updateStatus'])
         ->name('quejas.update-status');
+    Route::get('/quejas/{complaint}', [PublicQuejaController::class, 'show'])
+        ->name('quejas.show');
 });
 
 
