@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PublicQuejaController;
 use App\Http\Controllers\QuejasDashboardController;
 use App\Http\Controllers\PublicTrackingController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('quejas.portal');
@@ -29,6 +30,14 @@ Route::post(
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard-login', function () {
+    Auth::logout(); // 🔥 fuerza logout
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect()->route('login');
+})->name('dashboard.login');
 
 Route::get('/nueva-queja', [PublicQuejaController::class, 'create'])
     ->name('quejas.create');

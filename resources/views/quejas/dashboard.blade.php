@@ -15,7 +15,7 @@ Dashboard de Quejas
             Dashboard de Quejas
         </h1>
 
-        <a href="{{ route('portal') }}"
+        <a href="{{ route('dashboard.login') }}"
             class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow inline-flex items-center gap-2 transition">
 
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
@@ -27,7 +27,7 @@ Dashboard de Quejas
 
             </svg>
 
-            Panel Principal
+            Cerrar Sesión
         </a>
 
     </div>

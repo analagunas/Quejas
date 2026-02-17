@@ -1,35 +1,100 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="es">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+<head>
+    <meta charset="UTF-8">
+    <title>Quejas Login | Restaurante El Cardenal</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+<body class="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-200 flex items-center justify-center">
+
+    <div class="w-full max-w-md px-6">
+
+        {{-- BOTON REGRESAR --}}
+        <div class="flex justify-end mb-4">
+            <a href="{{ route('portal') }}"
+                class="text-sm text-gray-500 hover:text-red-600 transition flex items-center gap-1">
+                ← Panel principal
+            </a>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        {{-- CARD LOGIN --}}
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                type="password"
-                name="password"
-                required autocomplete="current-password" />
+            {{-- LOGO --}}
+            <div class="text-center mb-6">
+                <img src="{{ asset('images/logo.png') }}"
+                    class="h-16 mx-auto mb-4">
+                <h1 class="text-2xl font-bold text-red-600">
+                    Iniciar sesión
+                </h1>
+                <p class="text-sm text-gray-500">
+                    Acceso al panel de administración
+                </p>
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            {{-- STATUS --}}
+            @if(session('status'))
+            <div class="mb-4 text-sm text-green-600 text-center">
+                {{ session('status') }}
+            </div>
+            @endif
+
+            {{-- FORM --}}
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                @csrf
+
+                {{-- EMAIL --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Correo electrónico
+                    </label>
+
+                    <input type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        required
+                        class="w-full rounded-lg border-gray-300 focus:border-red-500 focus:ring-red-500">
+
+                    @error('email')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- PASSWORD --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Contraseña
+                    </label>
+
+                    <input type="password"
+                        name="password"
+                        required
+                        class="w-full rounded-lg border-gray-300 focus:border-red-500 focus:ring-red-500">
+
+                    @error('password')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- BOTON --}}
+                <button
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg shadow transition">
+                    Iniciar sesión
+                </button>
+
+            </form>
+
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        {{-- FOOTER --}}
+        <p class="text-center text-xs text-gray-400 mt-6">
+            © {{ date('Y') }} Restaurante El Cardenal
+        </p>
 
+    </div>
 
-            <x-primary-button style="background-color: #CD1719; border-color: #CD1719; color: white;">
-                {{ __('Inicia Sesión') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</body>
+
+</html>
