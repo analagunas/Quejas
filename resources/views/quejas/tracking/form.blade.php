@@ -2,104 +2,131 @@
 
 @section('content')
 
-<br>
+<div class="max-w-4xl mx-auto py-10 px-4">
+    <br>
+    {{-- HEADER --}}
+    <div class="flex justify-between items-center mb-8">
 
-<div class="flex justify-end">
-    <a href="{{ route('portal') }}"
-        style="background-color: #CD1719; color: white; font-weight: 600; padding: 0.5rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: background-color 0.3s; text-decoration: none;"
-        onmouseover="this.style.backgroundColor='#A01214';"
-        onmouseout="this.style.backgroundColor='#CD1719';"
-        class="inline-flex items-center gap-2">
+        <h1 class="text-2xl font-bold text-gray-800">
+            Seguimiento de Queja
+        </h1>
 
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 19l-7-7 7-7" />
-        </svg>
+        <a href="{{ route('portal') }}"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow inline-flex items-center gap-2 transition">
 
-        Regresar al Panel Principal
-    </a>
-</div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
 
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7" />
 
-<br>
+            </svg>
 
-<div class="max-w-3xl mx-auto bg-white p-8 rounded shadow">
+            Panel Principal
+        </a>
 
-    <h2 class="text-2xl font-bold text-red-600 mb-6 text-center">
-        Seguimiento de Queja
-    </h2>
+    </div>
 
-    {{-- BUSCAR FOLIO --}}
-    <form method="POST" action="{{ route('quejas.tracking.search') }}" class="mb-6">
-        @csrf
+    {{-- CARD BUSQUEDA --}}
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
 
-        <input type="text"
-            name="folio"
-            placeholder="Ingresa tu folio (ej. QJ-GIZSTH)"
-            class="w-full border rounded p-3 mb-3"
-            required>
-        <br>
-        <br>
+        <form method="POST"
+            action="{{ route('quejas.tracking.search') }}"
+            class="space-y-4">
 
-        <button class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 w-full">
-            Buscar
-        </button>
-    </form>
+            @csrf
+
+            <input type="text"
+                name="folio"
+                placeholder="Ingresa tu folio (Ej. QJ-XXXX)"
+                class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-red-500 focus:outline-none"
+                required>
+
+            <button
+                class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg shadow transition">
+                Buscar Seguimiento
+            </button>
+
+        </form>
+
+    </div>
 
     {{-- RESULTADO --}}
     @isset($complaint)
 
-    <div class="border-t pt-4">
+    {{-- SI ESTA RESUELTA --}}
+    @if($complaint->status === 'Resuelta')
+    <div class="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg mb-6 text-center">
+        ✅ Esta queja ya fue resuelta. El seguimiento está cerrado.
+    </div>
+    @endif
 
-        <h3 class="font-bold mb-3">
+    {{-- CARD HISTORIAL --}}
+    <div class="bg-white rounded-xl shadow p-6">
+
+        <h3 class="font-semibold text-lg text-gray-800 mb-6">
             Historial del folio: {{ $complaint->folio }}
         </h3>
 
         @forelse($complaint->statusHistory as $history)
 
-        <div class="border rounded p-3 mb-3 bg-gray-50">
+        <div class="border-l-4 border-red-500 bg-gray-50 p-4 rounded mb-4">
 
-            {{-- QUIEN COMENTA --}}
-            <p class="text-sm font-semibold">
-                @if($history->user_id == 1)
-                Usuario
-                @else
-                Administración
-                @endif
-            </p>
+            {{-- HEADER HISTORIAL --}}
+            <div class="flex justify-between text-xs text-gray-500 mb-2">
 
-            <p>
-                <strong>Estado:</strong>
-                {{ $history->old_status }} → {{ $history->new_status }}
-            </p>
+                <span class="font-semibold text-gray-700">
+                    @if($history->user_id == 1)
+                    Usuario
+                    @else
+                    Administración
+                    @endif
+                </span>
 
-            <p>
-                <strong>Comentario:</strong>
-                {{ $history->comment }}
-            </p>
+                <span>
+                    {{ $history->created_at->format('d/m/Y H:i') }}
+                </span>
 
-            <p class="text-sm text-gray-500">
-                Fecha: {{ $history->created_at->format('d/m/Y H:i') }}
-            </p>
+            </div>
 
-            {{-- SOLO RESPONDER AL ÚLTIMO --}}
-            @if($loop->last)
+            {{-- CAMBIO ESTATUS --}}
+            <div class="text-sm text-gray-800">
+                Cambio de
+                <span class="font-semibold text-blue-600">
+                    {{ $history->old_status }}
+                </span>
+                a
+                <span class="font-semibold text-green-600">
+                    {{ $history->new_status }}
+                </span>
+            </div>
+
+            {{-- COMENTARIO --}}
+            @if($history->comment)
+            <div class="mt-2 text-sm italic text-gray-700">
+                "{{ $history->comment }}"
+            </div>
+            @endif
+
+            {{-- RESPUESTA SOLO SI NO ESTA RESUELTA Y SOLO ULTIMO --}}
+            @if($loop->last && $complaint->status !== 'Resuelta')
 
             <form method="POST"
                 action="{{ route('quejas.tracking.reply', $complaint->id) }}"
-                class="mt-3">
+                class="mt-4">
 
                 @csrf
 
                 <textarea
                     name="reply"
-                    class="w-full border rounded p-2 text-sm"
+                    rows="3"
+                    class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none"
                     placeholder="Responder al último comentario..."
                     required></textarea>
 
                 <button
-                    class="bg-blue-600 text-white px-4 py-2 rounded text-sm mt-2 hover:bg-blue-700">
+                    class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg text-sm mt-3 shadow transition">
                     Enviar respuesta
                 </button>
 
@@ -110,19 +137,33 @@
         </div>
 
         @empty
-        <p class="text-gray-500">No hay movimientos registrados.</p>
+        <p class="text-gray-500 text-center">
+            No hay movimientos registrados.
+        </p>
         @endforelse
 
     </div>
 
     @elseif(request()->isMethod('post'))
 
-    <p class="text-red-600 text-center">
+    <div id="errorFolio"
+        class="bg-red-50 border border-red-200 text-red-600 p-4 rounded-lg text-center transition-opacity duration-500">
         ❌ Folio no encontrado.
-    </p>
+    </div>
 
     @endisset
 
 </div>
+
+<script>
+    setTimeout(() => {
+        let error = document.getElementById('errorFolio');
+        if (error) {
+            error.style.opacity = '0';
+            setTimeout(() => error.remove(), 500);
+        }
+    }, 3000);
+</script>
+
 
 @endsection

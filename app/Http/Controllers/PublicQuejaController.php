@@ -60,4 +60,36 @@ class PublicQuejaController extends Controller
         $complaint->load('statusHistory.user');
         return view('quejas.show', compact('complaint'));
     }
+
+    public function updateStatus(Request $request, Complaint $complaint)
+    {
+        // 🚨 BLOQUEO BACKEND
+        if ($complaint->status === 'Resuelta') {
+            return back()->with('error', 'La queja ya está resuelta y no permite cambios.');
+        }
+
+        // VALIDAR
+        $request->validate([
+            'status' => 'required|string',
+            'comment' => 'required|string|max:1000'
+        ]);
+
+        // GUARDAR STATUS ANTERIOR
+        $oldStatus = $complaint->status;
+
+        // ACTUALIZAR STATUS ACTUAL
+        $complaint->update([
+            'status' => $request->status
+        ]);
+
+        // GUARDAR HISTORIAL
+        $complaint->statusHistory()->create([
+            'user_id' => auth()->id(),
+            'old_status' => $oldStatus,
+            'new_status' => $request->status,
+            'comment' => $request->comment
+        ]);
+
+        return back()->with('success', 'Estatus actualizado correctamente.');
+    }
 }

@@ -6,120 +6,121 @@ Dashboard de Quejas
 
 @section('content')
 
-<br>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <br>
+    {{-- HEADER --}}
+    <div class="flex justify-between items-center mb-8">
 
-<div class="flex justify-end">
-    <a href="{{ route('portal') }}"
-        style="background-color: #CD1719; color: white; font-weight: 600; padding: 0.5rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: background-color 0.3s; text-decoration: none;"
-        onmouseover="this.style.backgroundColor='#A01214';"
-        onmouseout="this.style.backgroundColor='#CD1719';"
-        class="inline-flex items-center gap-2">
+        <h1 class="text-2xl font-bold text-gray-800">
+            Dashboard de Quejas
+        </h1>
 
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 19l-7-7 7-7" />
-        </svg>
+        <a href="{{ route('portal') }}"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow inline-flex items-center gap-2 transition">
 
-        Regresar al Panel Principal
-    </a>
-</div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
 
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7" />
 
-<br>
+            </svg>
 
-<div class="py-12 max-w-7xl mx-auto space-y-8">
+            Panel Principal
+        </a>
 
-    {{-- TOTAL --}}
-    <div class="bg-white p-6 rounded shadow text-center">
-        <h3 class="text-lg font-semibold">Total de quejas</h3>
-        <p class="text-4xl font-bold text-red-600">
-            {{ $total }}
-        </p>
     </div>
 
-    {{-- POR ESTATUS --}}
-    <div class="bg-white p-6 rounded shadow">
-        <h3 class="text-lg font-semibold mb-4">
-            Quejas por estatus
-        </h3>
+    {{-- KPI CARDS --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-        @php
-        $labels = [
-        'nueva' => 'Nueva',
-        'en_proceso' => 'En proceso',
-        'cerrada' => 'Cerrada',
-        'resuelta' => 'Resuelta'
-        ];
-
-        $colors = [
-        'nueva' => 'text-blue-600',
-        'en_proceso' => 'text-yellow-600',
-        'cerrada' => 'text-gray-600',
-        'resuelta' => 'text-green-600'
-        ];
-        @endphp
-
-        @foreach($byStatus as $status => $count)
-        <div class="flex justify-between border-b py-2">
-            <span class="{{ $colors[strtolower($status)] ?? '' }}">
-                {{ $labels[strtolower($status)] ?? ucfirst($status) }}
-            </span>
-
-            <span class="font-semibold">
-                {{ $count }}
-            </span>
+        {{-- TOTAL --}}
+        <div class="bg-white rounded-xl shadow p-6">
+            <p class="text-sm text-gray-500">Total de Quejas</p>
+            <p class="text-3xl font-bold text-red-600 mt-1">
+                {{ $total }}
+            </p>
         </div>
-        @endforeach
-    </div>
 
-    {{-- POR UNIDAD --}}
-    <div class="bg-white p-6 rounded shadow">
-        <h3 class="text-lg font-semibold mb-4">
-            Quejas por unidad
-        </h3>
-
-        @foreach($byUnit as $unit => $count)
-        <div class="flex justify-between border-b py-2">
-            <span>{{ $unit }}</span>
-            <span class="font-semibold">{{ $count }}</span>
+        {{-- NUEVAS --}}
+        <div class="bg-white rounded-xl shadow p-6">
+            <p class="text-sm text-gray-500">Nuevas</p>
+            <p class="text-3xl font-bold text-blue-600 mt-1">
+                {{ $byStatus['Nueva'] ?? 0 }}
+            </p>
         </div>
-        @endforeach
-    </div>
 
-    {{-- POR TEMA --}}
-    <div class="bg-white p-6 rounded shadow">
-        <h3 class="text-lg font-semibold mb-4">
-            Quejas por tema
-        </h3>
-
-        @foreach($byTheme as $theme => $count)
-        <div class="flex justify-between border-b py-2">
-            <span>{{ $theme }}</span>
-            <span class="font-semibold">{{ $count }}</span>
+        {{-- EN PROCESO --}}
+        <div class="bg-white rounded-xl shadow p-6">
+            <p class="text-sm text-gray-500">En proceso</p>
+            <p class="text-3xl font-bold text-yellow-600 mt-1">
+                {{ $byStatus['En proceso'] ?? 0 }}
+            </p>
         </div>
-        @endforeach
+
+        {{-- RESUELTAS --}}
+        <div class="bg-white rounded-xl shadow p-6">
+            <p class="text-sm text-gray-500">Resueltas</p>
+            <p class="text-3xl font-bold text-green-600 mt-1">
+                {{ $byStatus['Resuelta'] ?? 0 }}
+            </p>
+        </div>
+
     </div>
 
-    {{-- TABLA LISTADO --}}
-    <div class="bg-white p-6 rounded shadow">
+    {{-- GRID DE LISTAS --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
-        <h3 class="text-lg font-semibold mb-4">
-            Listado de quejas
+        {{-- POR UNIDAD --}}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="font-semibold text-gray-800 mb-4">
+                Quejas por Unidad
+            </h3>
+
+            @foreach($byUnit as $unit => $count)
+            <div class="flex justify-between border-b py-2 text-sm">
+                <span class="text-gray-700">{{ $unit }}</span>
+                <span class="font-semibold">{{ $count }}</span>
+            </div>
+            @endforeach
+        </div>
+
+        {{-- POR TEMA --}}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="font-semibold text-gray-800 mb-4">
+                Quejas por Tema
+            </h3>
+
+            @foreach($byTheme as $theme => $count)
+            <div class="flex justify-between border-b py-2 text-sm">
+                <span class="text-gray-700">{{ $theme }}</span>
+                <span class="font-semibold">{{ $count }}</span>
+            </div>
+            @endforeach
+        </div>
+
+    </div>
+
+    {{-- TABLA --}}
+    <div class="bg-white rounded-xl shadow p-6">
+
+        <h3 class="font-semibold text-gray-800 mb-6">
+            Listado de Quejas
         </h3>
 
         <div class="overflow-x-auto">
 
             <table class="w-full text-sm">
 
-                <thead class="border-b bg-gray-50">
-                    <tr class="text-left">
-                        <th class="p-2">Folio</th>
-                        <th class="p-2">Unidad</th>
-                        <th class="p-2">Tema</th>
-                        <th class="p-2">Estatus</th>
-                        <th class="p-2">Fecha</th>
-                        <th class="p-2">Acciones</th>
+                <thead>
+                    <tr class="text-left text-gray-500 border-b">
+                        <th class="pb-3">Folio</th>
+                        <th class="pb-3">Unidad</th>
+                        <th class="pb-3">Tema</th>
+                        <th class="pb-3">Estatus</th>
+                        <th class="pb-3">Fecha</th>
+                        <th class="pb-3 text-right">Acciones</th>
                     </tr>
                 </thead>
 
@@ -127,27 +128,27 @@ Dashboard de Quejas
 
                     @forelse($complaints as $complaint)
 
-                    <tr class="border-b hover:bg-gray-50">
+                    <tr class="border-b hover:bg-gray-50 transition">
 
-                        <td class="p-2 font-semibold">
+                        <td class="py-3 font-semibold text-gray-800">
                             {{ $complaint->folio }}
                         </td>
 
-                        <td class="p-2">
+                        <td class="py-3 text-gray-700">
                             {{ $complaint->unidad }}
                         </td>
 
-                        <td class="p-2">
+                        <td class="py-3 text-gray-700">
                             {{ $complaint->topic?->name ?? 'Sin tema' }}
                         </td>
 
-                        <td class="p-2">
+                        <td class="py-3">
 
-                            <span class="px-2 py-1 rounded text-xs font-semibold
-                                @if($complaint->status === 'Nueva') bg-blue-100 text-blue-800
-                                @elseif($complaint->status === 'En proceso') bg-yellow-100 text-yellow-800
-                                @elseif($complaint->status === 'Resuelta') bg-green-100 text-green-800
-                                @else bg-gray-100 text-gray-800
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                @if($complaint->status === 'Nueva') bg-blue-100 text-blue-700
+                                @elseif($complaint->status === 'En proceso') bg-yellow-100 text-yellow-700
+                                @elseif($complaint->status === 'Resuelta') bg-green-100 text-green-700
+                                @else bg-gray-100 text-gray-700
                                 @endif">
 
                                 {{ $complaint->status }}
@@ -156,18 +157,18 @@ Dashboard de Quejas
 
                         </td>
 
-                        <td class="p-2 text-gray-600 text-xs">
+                        <td class="py-3 text-xs text-gray-500">
                             {{ $complaint->created_at->format('d/m/Y') }}
                         </td>
 
-                        <td class="p-2">
+                        <td class="py-3 text-right">
 
                             <a href="{{ route('quejas.show', $complaint->id) }}"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold">
+                                class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition">
 
                                 Ver detalle
-
                             </a>
+
 
                         </td>
 
@@ -176,7 +177,8 @@ Dashboard de Quejas
                     @empty
 
                     <tr>
-                        <td colspan="6" class="text-center p-4 text-gray-500">
+                        <td colspan="6"
+                            class="text-center py-6 text-gray-500">
                             No hay quejas registradas.
                         </td>
                     </tr>
