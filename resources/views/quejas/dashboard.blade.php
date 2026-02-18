@@ -47,7 +47,7 @@ Dashboard de Quejas
         <div class="bg-white rounded-xl shadow p-6">
             <p class="text-sm text-gray-500">Nuevas</p>
             <p class="text-3xl font-bold text-blue-600 mt-1">
-                {{ $byStatus['Nueva'] ?? 0 }}
+                {{ $byStatus['nueva'] ?? 0 }}
             </p>
         </div>
 
@@ -131,8 +131,9 @@ Dashboard de Quejas
                     <tr class="border-b hover:bg-gray-50 transition">
 
                         <td class="py-3 font-semibold text-gray-800">
-                            {{ $complaint->folio }}
+                            {{ substr($complaint->folio, 1, -1) }}
                         </td>
+
 
                         <td class="py-3 text-gray-700">
                             {{ $complaint->unidad }}
