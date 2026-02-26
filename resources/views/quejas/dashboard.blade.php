@@ -131,7 +131,7 @@ Dashboard de Quejas
                     <tr class="border-b hover:bg-gray-50 transition">
 
                         <td class="py-3 font-semibold text-gray-800">
-                            {{ substr($complaint->folio, 1, -1) }}
+                            ADM{{ $complaint->id }}{{ substr($complaint->folio, 4, -1) }}
                         </td>
 
 
